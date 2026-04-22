@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kk的小空间 - 记录开心与心情的私人分享空间</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f9ff;
+            color: #333;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 背景装饰 */
+        .background-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .penguin-footprint {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .penguin-footprint:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .penguin-footprint:nth-child(2) {
+            top: 30%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        .penguin-footprint:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            animation-delay: 10s;
+        }
+
+        .penguin-footprint:nth-child(4) {
+            bottom: 40%;
+            right: 15%;
+            animation-delay: 15s;
+        }
+
+        /* 企鹅贴纸 */
+        .penguin-sticker {
+            position: fixed;
+            z-index: 1;
+            opacity: 0.6;
+            animation: wobble 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .penguin-sticker.small {
+            width: 30px;
+            height: 30px;
+        }
+
+        .penguin-sticker.medium {
+            width: 50px;
+            height: 50px;
+        }
+
+        .penguin-sticker.large {
+            width: 70px;
+            height: 70px;
+        }
+
+        @keyframes wobble {
+            0%, 100% {
+                transform: rotate(-3deg) scale(1);
+            }
+            50% {
+                transform: rotate(3deg) scale(1.05);
+            }
+        }
+
+        /* 心情贴纸样式 */
+        .mood-stickers {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mood-sticker {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            background-color: #f0f0f0;
+        }
+
+        .mood-sticker:hover {
+            transform: scale(1.15);
+            background-color: #e0e0e0;
+        }
+
+        .mood-sticker.active {
+            background-color: #A7D7E8;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transform: scale(1.1);
+        }
+
+        /* 卡片上的心情贴纸 */
+        .note-mood-sticker {
+            font-size: 24px;
+            margin-left: auto;
+            background-color: #A7D7E8;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        /* 容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* 头部 */
+        header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* 固定角色元素 */
+        .fixed-role {
+            flex: 1;
+            min-width: 250px;
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            text-align: center;
+        }
+
+        .role-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 4px solid #A7D7E8;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .role-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .role-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .role-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .upload-btn {
+            background-color: #A7D7E8;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background-color: #8cc4d6;
+        }
+
+        #avatar-upload {
+            display: none;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        /* 写新纸条按钮 */
+        .new-note-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #FFB347;
+            color: white;
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 179, 71, 0.4);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .new-note-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 179, 71, 0.6);
+        }
+
+        /* 小纸条列表 */
+        .notes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 小纸条卡片 */
+        .note-card {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .note-card::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.2;
+        }
+
+        .note-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .note-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .note-author {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .note-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .note-mood {
+            margin-left: auto;
+            background-color: #A7D7E8;
+            color: #333;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .note-content {
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .note-images {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .note-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        /* 留言区 */
+        .comments-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .comment {
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .comment-text {
+            font-size: 14px;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .comment-submit {
+            background-color: #A7D7E8;
+            color: #333;
+            border: none;
+            padding: 0 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .comment-submit:hover {
+            background-color: #8cc4d6;
+        }
+
+        /* 发布小纸条弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+            font-size: 16px;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .image-upload-area:hover {
+            border-color: #A7D7E8;
+        }
+
+        #image-upload {
+            display: none;
+        }
+
+        .uploaded-images {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .uploaded-image {
+            position: relative;
+        }
+
+        .uploaded-image img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .mood-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mood-tag {
+            background-color: #f0f0f0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mood-tag:hover {
+            background-color: #e0e0e0;
+        }
+
+        .mood-tag.active {
+            background-color: #A7D7E8;
+            color: #333;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .btn-primary {
+            background-color: #FFB347;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff9f1c;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .fixed-role {
+                position: relative;
+                top: 0;
+                order: -1;
+            }
+
+            .new-note-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #A7D7E8;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="background-decoration">
+        <div class="penguin-footprint"></div>
+        <div class="penguin-footprint"></div>
+        <div class="penguin-footprint"></div>
+        <div class="penguin-footprint"></div>
+    </div>
+
+    <!-- 容器 -->
+    <div class="container">
+        <!-- 头部 -->
+        <header>
+            <div class="logo">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjdCN0I3IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiA0QzkuNzkgNCA4IDUuNzkgOCA4czEuNzkgNCA0IDQgNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQgMS43OS00IDR6Ii8+PHBhdGggZD0iTTEyIDEyQzEyIDEyIDEyIDEyIDEyIDEyeiIvPjxwYXRoIGQ9Ik0xMiAxNEwxMiAxNnoiLz48cGF0aCBkPSJNNyA4SDE3djJINTd6Ii8+PHBhdGggZD0iTTcgMTJIMTd2Mkg3eiIvPjwvc3ZnPg==" alt="kk的小空间">
+                kk的小空间
+            </div>
+            <p class="subtitle">记录开心与心情的私人分享空间</p>
+        </header>
+
+        <!-- 企鹅贴纸装饰 -->
+        <div class="penguin-sticker small" style="top: 15%; left: 2%;">🐧</div>
+        <div class="penguin-sticker medium" style="top: 60%; right: 3%;">💫</div>
+        <div class="penguin-sticker small" style="bottom: 25%; left: 10%;">🌟</div>
+        <div class="penguin-sticker large" style="top: 25%; right: 25%;">❤️</div>
+        <div class="penguin-sticker medium" style="bottom: 10%; right: 15%;">🎨</div>
+
+        <!-- 固定角色元素 -->
+        <div class="fixed-role">
+            <img id="role-avatar" class="role-avatar" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48cGF0aCBkPSJNMTAgMTkwQzE1IDgwIDUwIDUwIDEwMCAxMCIgZmlsbD0iI0E3RDdFOCIvPjwvc3ZnPg==" alt="角色头像">
+            <h3 class="role-name">kk</h3>
+            <p class="role-description">记录生活中的每一个美好瞬间</p>
+            <button class="upload-btn" onclick="document.getElementById('avatar-upload').click()">更换头像</button>
+            <input type="file" id="avatar-upload" accept="image/*">
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 小纸条列表 -->
+            <div class="notes-list" id="notes-list"></div>
+        </div>
+    </div>
+
+    <!-- 写新纸条按钮 -->
+    <button class="new-note-btn" onclick="openModal()">+</button>
+
+    <!-- 发布小纸条弹窗 -->
+    <div class="modal" id="note-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 class="modal-title">写新纸条</h2>
+            <form id="note-form">
+                <div class="form-group">
+                    <label class="form-label">内容</label>
+                    <textarea class="form-textarea" id="note-content" placeholder="写下你的开心事或心情..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">图片</label>
+                    <div class="image-upload-area" onclick="document.getElementById('image-upload').click()">
+                        <p>点击上传图片（最多3张）</p>
+                    </div>
+                    <input type="file" id="image-upload" accept="image/*" multiple>
+                    <div class="uploaded-images" id="uploaded-images"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">心情</label>
+                    <div class="mood-stickers">
+                        <div class="mood-sticker active" data-mood="开心" data-emoji="😊">😊</div>
+                        <div class="mood-sticker" data-mood="激动" data-emoji="🎉">🎉</div>
+                        <div class="mood-sticker" data-mood="平静" data-emoji="😌">😌</div>
+                        <div class="mood-sticker" data-mood="治愈" data-emoji="🌸">🌸</div>
+                        <div class="mood-sticker" data-mood="感恩" data-emoji="🙏">🙏</div>
+                        <div class="mood-sticker" data-mood="期待" data-emoji="✨">✨</div>
+                        <div class="mood-sticker" data-mood="疲惫" data-emoji="😴">😴</div>
+                        <div class="mood-sticker" data-mood="幸福" data-emoji="🥰">🥰</div>
+                        <div class="mood-sticker" data-mood="思考" data-emoji="🤔">🤔</div>
+                        <div class="mood-sticker" data-mood="放松" data-emoji="😎">😎</div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">发布</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 数据存储键名
+        const STORAGE_KEYS = {
+            NOTES: 'penguin_notes',
+            COMMENTS: 'penguin_comments',
+            AVATAR: 'penguin_avatar'
+        };
+
+        // 预置朋友昵称
+        const FRIEND_NAMES = ['小企鹅', '北极熊', '海豹', '海狮', '鲸鱼'];
+
+        // 心情贴纸
+        const MOOD_STICKERS = {
+            '开心': '😊',
+            '激动': '🎉',
+            '平静': '😌',
+            '治愈': '🌸',
+            '感恩': '🙏',
+            '期待': '✨',
+            '疲惫': '😴',
+            '幸福': '🥰',
+            '思考': '🤔',
+            '放松': '😎'
+        };
+        const MOOD_TAGS = Object.keys(MOOD_STICKERS);
+
+        // 上传的图片
+        let uploadedImages = [];
+        let selectedMood = '开心';
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupEventListeners();
+        });
+
+        // 初始化应用
+        function initializeApp() {
+            // 检查并初始化本地存储
+            if (!localStorage.getItem(STORAGE_KEYS.NOTES)) {
+                initializeSampleData();
+            }
+
+            // 加载角色头像
+            loadRoleAvatar();
+
+            // 渲染小纸条列表
+            renderNotes();
+        }
+
+        // 初始化示例数据
+        function initializeSampleData() {
+            const sampleNotes = [
+                {
+                    id: '1',
+                    content: '今天天气真好，和朋友一起去公园散步，看到了可爱的小企鹅雕像！🐧',
+                    images: [],
+                    mood: '开心',
+                    timestamp: Date.now() - 86400000, // 1天前
+                    author: 'kk'
+                },
+                {
+                    id: '2',
+                    content: '终于完成了一幅企鹅主题的绘画，感觉很有成就感！🎨',
+                    images: ['data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMTBDNTUgNDAgMjAgNDAgMjAgNzBDMjAgOTAgNTAgOTAgNTAgNzBDNTAgOTAgODAgOTAgODAgNzBDODAgNDAgNTUgNDAgNTAgMTB6IiBmaWxsPSIjQjdiN2I3Ii8+PHBhdGggZD0iTTUwIDM1QzU1IDM1IDU1IDM1IDU1IDM1Ii8+PHBhdGggZD0iTTUwIDQ1TjUwIDQ1Ii8+PHBhdGggZD0iTTI1IDQwSDc1djJIMjV6Ii8+PHBhdGggZD0iTTI1IDQ1SDc1djJIMjV6Ii8+PC9zdmc+'],
+                    mood: '激动',
+                    timestamp: Date.now() - 172800000, // 2天前
+                    author: 'kk'
+                },
+                {
+                    id: '3',
+                    content: '深夜的思考时间，有些想法在脑海中浮现...',
+                    images: [],
+                    mood: '思考',
+                    timestamp: Date.now() - 259200000, // 3天前
+                    author: 'kk'
+                }
+            ];
+
+            const sampleComments = [
+                {
+                    id: '1',
+                    messageId: '1',
+                    content: '看起来很开心呢！下次一起去看企鹅吧！',
+                    author: '北极熊',
+                    timestamp: Date.now() - 82800000 // 1天前 - 1小时
+                },
+                {
+                    id: '2',
+                    messageId: '2',
+                    content: '绘画很棒！期待看到更多作品！',
+                    author: '海豹',
+                    timestamp: Date.now() - 169200000 // 2天前 - 1小时
+                },
+                {
+                    id: '3',
+                    messageId: '3',
+                    content: '深夜适合思考人生呢～加油！',
+                    author: '海狮',
+                    timestamp: Date.now() - 252000000 // 3天前 - 2小时
+                }
+            ];
+
+            localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(sampleNotes));
+            localStorage.setItem(STORAGE_KEYS.COMMENTS, JSON.stringify(sampleComments));
+        }
+
+        // 加载角色头像
+        function loadRoleAvatar() {
+            const savedAvatar = localStorage.getItem(STORAGE_KEYS.AVATAR);
+            if (savedAvatar) {
+                document.getElementById('role-avatar').src = savedAvatar;
+            }
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 心情贴纸点击事件
+            document.querySelectorAll('.mood-sticker').forEach(sticker => {
+                sticker.addEventListener('click', function() {
+                    document.querySelectorAll('.mood-sticker').forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedMood = this.dataset.mood;
+                });
+            });
+
+            // 图片上传事件
+            document.getElementById('image-upload').addEventListener('change', handleImageUpload);
+
+            // 角色头像上传事件
+            document.getElementById('avatar-upload').addEventListener('change', handleAvatarUpload);
+
+            // 表单提交事件
+            document.getElementById('note-form').addEventListener('submit', handleNoteSubmit);
+        }
+
+        // 处理图片上传
+        function handleImageUpload(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                // 限制最多3张图片
+                const remainingSlots = 3 - uploadedImages.length;
+                const filesToProcess = Array.from(files).slice(0, remainingSlots);
+
+                filesToProcess.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        uploadedImages.push(e.target.result);
+                        updateUploadedImages();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        // 更新上传的图片显示
+        function updateUploadedImages() {
+            const container = document.getElementById('uploaded-images');
+            container.innerHTML = '';
+
+            uploadedImages.forEach((image, index) => {
+                const div = document.createElement('div');
+                div.className = 'uploaded-image';
+                div.innerHTML = `
+                    <img src="${image}" alt="上传的图片">
+                    <button class="remove-image" onclick="removeImage(${index})">×</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // 移除图片
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            updateUploadedImages();
+        }
+
+        // 处理角色头像上传
+        function handleAvatarUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatarUrl = e.target.result;
+                    document.getElementById('role-avatar').src = avatarUrl;
+                    localStorage.setItem(STORAGE_KEYS.AVATAR, avatarUrl);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 处理小纸条提交
+        function handleNoteSubmit(e) {
+            e.preventDefault();
+
+            const content = document.getElementById('note-content').value;
+
+            if (!content.trim()) {
+                alert('请输入内容');
+                return;
+            }
+
+            // 创建新小纸条
+            const newNote = {
+                id: Date.now().toString(),
+                content: content,
+                images: [...uploadedImages],
+                mood: selectedMood,
+                timestamp: Date.now(),
+                author: 'kk'
+            };
+
+            // 保存到本地存储
+            const notes = JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTES) || '[]');
+            notes.unshift(newNote);
+            localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(notes));
+
+            // 重置表单
+            document.getElementById('note-form').reset();
+            uploadedImages = [];
+            updateUploadedImages();
+            selectedMood = '开心';
+            document.querySelectorAll('.mood-sticker').forEach(sticker => {
+                sticker.classList.remove('active');
+                if (sticker.dataset.mood === '开心') {
+                    sticker.classList.add('active');
+                }
+            });
+
+            // 关闭弹窗
+            closeModal();
+
+            // 重新渲染小纸条列表
+            renderNotes();
+        }
+
+        // 渲染小纸条列表
+        function renderNotes() {
+            const notesList = document.getElementById('notes-list');
+            const notes = JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTES) || '[]');
+            const comments = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMMENTS) || '[]');
+
+            notesList.innerHTML = '';
+
+            notes.forEach(note => {
+                const noteCard = createNoteCard(note, comments);
+                notesList.appendChild(noteCard);
+            });
+        }
+
+        // 创建小纸条卡片
+        function createNoteCard(note, comments) {
+            const card = document.createElement('div');
+            card.className = 'note-card';
+
+            // 过滤出当前小纸条的留言
+            const noteComments = comments.filter(comment => comment.messageId === note.id);
+
+            // 格式化时间
+            const formattedTime = formatTime(note.timestamp);
+
+            // 图片HTML
+            let imagesHtml = '';
+            if (note.images && note.images.length > 0) {
+                imagesHtml = '<div class="note-images">';
+                note.images.forEach(image => {
+                    imagesHtml += `<img src="${image}" alt="小纸条图片" class="note-image">`;
+                });
+                imagesHtml += '</div>';
+            }
+
+            // 留言HTML
+            let commentsHtml = '<div class="comments-section">';
+            if (noteComments.length > 0) {
+                commentsHtml += '<div class="comments-list">';
+                noteComments.forEach(comment => {
+                    commentsHtml += `
+                        <div class="comment">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjdCN0I3IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiA0QzkuNzkgNCA4IDUuNzkgOCA4czEuNzkgNCA0IDQgNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQgMS43OS00IDR6Ii8+PHBhdGggZD0iTTEyIDEyQzEyIDEyIDEyIDEyIDEyIDEyeiIvPjxwYXRoIGQ9Ik0xMiAxNEwxMiAxNnoiLz48cGF0aCBkPSJNNyA4SDE3djJINTd6Ii8+PHBhdGggZD0iTTcgMTJIMTd2Mkg3eiIvPjwvc3ZnPg==" alt="用户头像" class="comment-avatar">
+                            <div class="comment-content">
+                                <div class="comment-author">${comment.author}</div>
+                                <div class="comment-text">${comment.content}</div>
+                                <div class="comment-time">${formatTime(comment.timestamp)}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                commentsHtml += '</div>';
+            }
+
+            // 留言表单
+            commentsHtml += `
+                <div class="comment-form">
+                    <input type="text" class="comment-input" placeholder="写下你的留言..." data-note-id="${note.id}">
+                    <button class="comment-submit" onclick="addComment('${note.id}')">发送</button>
+                </div>
+            `;
+
+            commentsHtml += '</div>';
+
+            const moodEmoji = MOOD_STICKERS[note.mood] || '😊';
+            card.innerHTML = `
+                <div class="note-header">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjdCN0I3IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiA0QzkuNzkgNCA4IDUuNzkgOCA4czEuNzkgNCA0IDQgNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQgMS43OS00IDR6Ii8+PHBhdGggZD0iTTEyIDEyQzEyIDEyIDEyIDEyIDEyIDEyeiIvPjxwYXRoIGQ9Ik0xMiAxNEwxMiAxNnoiLz48cGF0aCBkPSJNNyA4SDE3djJINTd6Ii8+PHBhdGggZD0iTTcgMTJIMTd2Mkg3eiIvPjwvc3ZnPg==" alt="用户头像" class="note-avatar">
+                    <span class="note-author">${note.author}</span>
+                    <span class="note-time">${formattedTime}</span>
+                    <span class="note-mood-sticker">${moodEmoji}</span>
+                </div>
+                <div class="note-content">${note.content}</div>
+                ${imagesHtml}
+                ${commentsHtml}
+            `;
+
+            return card;
+        }
+
+        // 添加留言
+        function addComment(noteId) {
+            const input = document.querySelector(`.comment-input[data-note-id="${noteId}"]`);
+            const content = input.value;
+
+            if (!content.trim()) {
+                return;
+            }
+
+            // 随机选择一个朋友昵称
+            const randomAuthor = FRIEND_NAMES[Math.floor(Math.random() * FRIEND_NAMES.length)];
+
+            // 创建新留言
+            const newComment = {
+                id: Date.now().toString(),
+                messageId: noteId,
+                content: content,
+                author: randomAuthor,
+                timestamp: Date.now()
+            };
+
+            // 保存到本地存储
+            const comments = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMMENTS) || '[]');
+            comments.push(newComment);
+            localStorage.setItem(STORAGE_KEYS.COMMENTS, JSON.stringify(comments));
+
+            // 清空输入框
+            input.value = '';
+
+            // 重新渲染小纸条列表
+            renderNotes();
+        }
+
+        // 格式化时间
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+
+            // 小于1分钟
+            if (diff < 60000) {
+                return '刚刚';
+            }
+            // 小于1小时
+            else if (diff < 3600000) {
+                return Math.floor(diff / 60000) + '分钟前';
+            }
+            // 小于1天
+            else if (diff < 86400000) {
+                return Math.floor(diff / 3600000) + '小时前';
+            }
+            // 小于30天
+            else if (diff < 2592000000) {
+                return Math.floor(diff / 86400000) + '天前';
+            }
+            // 其他
+            else {
+                return date.toLocaleDateString('zh-CN');
+            }
+        }
+
+        // 打开发布弹窗
+        function openModal() {
+            document.getElementById('note-modal').style.display = 'flex';
+        }
+
+        // 关闭发布弹窗
+        function closeModal() {
+            document.getElementById('note-modal').style.display = 'none';
+        }
+
+        // 点击弹窗外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('note-modal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
