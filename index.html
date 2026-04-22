@@ -112,8 +112,8 @@
         .avatar-selector {
             position: absolute;
             top: 100%;
-            right: 50%;
-            transform: translateX(50%);
+            left: 50%;
+            transform: translateX(-50%);
             background: white;
             border-radius: 15px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
@@ -123,6 +123,8 @@
             gap: 10px;
             z-index: 1000;
             margin-top: 10px;
+            width: auto;
+            max-width: 90vw;
         }
 
         .avatar-option {
@@ -141,19 +143,6 @@
 
         .avatar-selector.hidden {
             display: none;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .avatar-selector {
-                right: auto;
-                left: 50%;
-                transform: translateX(-50%);
-            }
         }
 
         .daily-quote {
@@ -989,20 +978,331 @@
 
         /* 响应式设计 */
         @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px 15px;
+                border-radius: 20px;
+            }
+
             .header h1 {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
+                flex-direction: column;
+                gap: 8px;
             }
 
             .penguin-family {
-                gap: 15px;
+                gap: 10px;
+                margin-bottom: 15px;
             }
 
             .penguin-banner {
+                font-size: 35px;
+            }
+
+            .daily-quote {
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+
+            .write-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+                border-radius: 20px;
+            }
+
+            .header-avatar {
+                font-size: 35px;
+            }
+
+            .avatar-selector {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+                padding: 12px;
+                right: 50%;
+                transform: translateX(50%);
+                width: auto;
+                min-width: 200px;
+            }
+
+            .avatar-option {
+                font-size: 28px;
+                padding: 8px;
+            }
+
+            .main-content {
+                gap: 15px;
+            }
+
+            .resident-card,
+            .stats-card,
+            .tip-card {
+                padding: 20px;
+                border-radius: 20px;
+                margin-bottom: 15px;
+            }
+
+            .resident-item {
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .resident-avatar {
+                font-size: 35px;
+            }
+
+            .stats-item {
+                padding: 8px 0;
+            }
+
+            .stats-value {
+                font-size: 1.3rem;
+            }
+
+            .note-card {
+                padding: 18px;
+                border-radius: 20px;
+                margin-bottom: 15px;
+            }
+
+            .note-header {
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .note-avatar {
                 font-size: 40px;
+            }
+
+            .note-author {
+                font-size: 1rem;
+            }
+
+            .note-time {
+                font-size: 0.85rem;
+            }
+
+            .mood-tag {
+                font-size: 32px;
+            }
+
+            .note-content {
+                font-size: 0.95rem;
+                line-height: 1.7;
             }
 
             .note-images {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .note-actions {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .action-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+                border-radius: 18px;
+            }
+
+            .fish-count {
+                font-size: 1rem;
+            }
+
+            .comments-section {
+                padding: 15px;
+            }
+
+            .comment-input-wrapper {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .comment-input {
+                font-size: 0.95rem;
+                padding: 10px 12px;
+            }
+
+            .comment-submit {
+                padding: 10px 20px;
+                align-self: flex-end;
+            }
+
+            .modal {
+                padding: 10px;
+            }
+
+            .modal-content {
+                border-radius: 20px;
+                max-height: 95vh;
+            }
+
+            .modal-header {
+                padding: 20px 15px;
+                border-radius: 20px 20px 0 0;
+            }
+
+            .modal-header h2 {
+                font-size: 1.4rem;
+            }
+
+            .modal-body {
+                padding: 20px 15px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            .form-label {
+                font-size: 0.95rem;
+            }
+
+            .form-textarea {
+                min-height: 120px;
+                padding: 12px;
+                font-size: 0.95rem;
+            }
+
+            .form-input {
+                padding: 10px 12px;
+                font-size: 0.95rem;
+            }
+
+            .mood-selector {
+                gap: 10px;
+            }
+
+            .mood-option {
+                font-size: 35px;
+                padding: 8px;
+            }
+
+            .upload-area {
+                padding: 25px 15px;
+            }
+
+            .upload-icon {
+                font-size: 40px;
+            }
+
+            .preview-images {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .modal-footer {
+                padding: 15px 15px 20px;
+                gap: 10px;
+            }
+
+            .modal-btn {
+                padding: 10px 22px;
+                font-size: 1rem;
+                border-radius: 20px;
+            }
+
+            .confirm-body {
+                padding: 30px 20px;
+            }
+
+            .confirm-penguin {
+                font-size: 60px;
+                margin-bottom: 15px;
+            }
+
+            .confirm-text {
+                font-size: 1.05rem;
+            }
+
+            .footer {
+                padding: 30px 15px;
+            }
+
+            .footer-penguin {
+                font-size: 40px;
+            }
+
+            .footer-text {
+                font-size: 1rem;
+            }
+
+            .empty-state {
+                padding: 50px 15px;
+            }
+
+            .empty-penguin {
+                font-size: 70px;
+            }
+
+            .empty-text {
+                font-size: 1.05rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .penguin-banner {
+                font-size: 30px;
+            }
+
+            .header-avatar {
+                font-size: 30px;
+            }
+
+            .avatar-selector {
+                grid-template-columns: repeat(4, 1fr);
+                min-width: 180px;
+            }
+
+            .avatar-option {
+                font-size: 24px;
+                padding: 6px;
+            }
+
+            .note-images {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .preview-images {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .mood-option {
+                font-size: 30px;
+            }
+        }
+
+        /* 移动端触控优化 */
+        @media (hover: none) and (pointer: coarse) {
+            .action-btn,
+            .modal-btn,
+            .write-btn,
+            .comment-submit {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .avatar-option,
+            .mood-option {
+                min-height: 44px;
+                min-width: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .form-textarea,
+            .form-input,
+            .comment-input {
+                font-size: 16px;
             }
         }
     </style>
