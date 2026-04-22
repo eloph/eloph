@@ -822,9 +822,9 @@
             try {
                 // 检查数据大小
                 const dataSize = JSON.stringify(value).length;
-                // 限制存储大小为5MB
-                if (dataSize > 5 * 1024 * 1024) {
-                    throw new Error('数据大小超过限制（5MB）');
+                // 限制存储大小为20MB
+                if (dataSize > 20 * 1024 * 1024) {
+                    throw new Error('数据大小超过限制（20MB）');
                 }
                 
                 if (typeof localStorage !== 'undefined') {
@@ -970,18 +970,18 @@
                 const filesToProcess = Array.from(files).slice(0, remainingSlots);
 
                 filesToProcess.forEach(file => {
-                    // 检查文件大小（限制为2MB）
-                    if (file.size > 2 * 1024 * 1024) {
-                        alert('图片大小不能超过2MB');
+                    // 检查文件大小（限制为5MB）
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('图片大小不能超过5MB');
                         return;
                     }
 
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         const imageData = e.target.result;
-                        // 检查base64编码后的大小（限制为1MB）
-                        if (imageData.length > 1 * 1024 * 1024) {
-                            alert('图片编码后大小不能超过1MB');
+                        // 检查base64编码后的大小（限制为3MB）
+                        if (imageData.length > 3 * 1024 * 1024) {
+                            alert('图片编码后大小不能超过3MB');
                             return;
                         }
                         uploadedImages.push(imageData);
