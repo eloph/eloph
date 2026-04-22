@@ -752,7 +752,7 @@
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
-                    <button type="submit" class="btn btn-primary">发布</button>
+                    <button type="button" class="btn btn-primary" onclick="handleNoteSubmit()">发布</button>
                 </div>
             </form>
         </div>
@@ -788,17 +788,73 @@
         let uploadedImages = [];
         let selectedMood = '开心';
 
+        // 内存存储（作为localStorage的降级方案）
+        let memoryStorage = {
+            notes: [],
+            comments: [],
+            avatar: null
+        };
+
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
             setupEventListeners();
         });
 
+        // 存储操作函数
+        function getStorage(key) {
+            try {
+                if (typeof localStorage !== 'undefined') {
+                    const data = localStorage.getItem(key);
+                    return data ? JSON.parse(data) : null;
+                }
+            } catch (error) {
+                console.error('从localStorage读取失败:', error);
+            }
+            // 降级到内存存储
+            if (key === STORAGE_KEYS.NOTES) return memoryStorage.notes;
+            if (key === STORAGE_KEYS.COMMENTS) return memoryStorage.comments;
+            if (key === STORAGE_KEYS.AVATAR) return memoryStorage.avatar;
+            return null;
+        }
+
+        function setStorage(key, value) {
+            try {
+                if (typeof localStorage !== 'undefined') {
+                    localStorage.setItem(key, JSON.stringify(value));
+                    return true;
+                }
+            } catch (error) {
+                console.error('写入localStorage失败:', error);
+            }
+            // 降级到内存存储
+            if (key === STORAGE_KEYS.NOTES) memoryStorage.notes = value;
+            if (key === STORAGE_KEYS.COMMENTS) memoryStorage.comments = value;
+            if (key === STORAGE_KEYS.AVATAR) memoryStorage.avatar = value;
+            return false;
+        }
+
+        function removeStorage(key) {
+            try {
+                if (typeof localStorage !== 'undefined') {
+                    localStorage.removeItem(key);
+                    return true;
+                }
+            } catch (error) {
+                console.error('从localStorage删除失败:', error);
+            }
+            // 降级到内存存储
+            if (key === STORAGE_KEYS.NOTES) memoryStorage.notes = [];
+            if (key === STORAGE_KEYS.COMMENTS) memoryStorage.comments = [];
+            if (key === STORAGE_KEYS.AVATAR) memoryStorage.avatar = null;
+            return false;
+        }
+
         // 初始化应用
         function initializeApp() {
-            // 清空本地存储（移除示例数据）
-            localStorage.removeItem(STORAGE_KEYS.NOTES);
-            localStorage.removeItem(STORAGE_KEYS.COMMENTS);
+            // 清空存储（移除示例数据）
+            removeStorage(STORAGE_KEYS.NOTES);
+            removeStorage(STORAGE_KEYS.COMMENTS);
 
             // 加载角色头像
             loadRoleAvatar();
@@ -866,7 +922,7 @@
 
         // 加载角色头像
         function loadRoleAvatar() {
-            const savedAvatar = localStorage.getItem(STORAGE_KEYS.AVATAR);
+            const savedAvatar = getStorage(STORAGE_KEYS.AVATAR);
             if (savedAvatar) {
                 document.getElementById('role-avatar').src = savedAvatar;
             }
@@ -942,7 +998,7 @@
                 reader.onload = function(e) {
                     const avatarUrl = e.target.result;
                     document.getElementById('role-avatar').src = avatarUrl;
-                    localStorage.setItem(STORAGE_KEYS.AVATAR, avatarUrl);
+                    setStorage(STORAGE_KEYS.AVATAR, avatarUrl);
                 };
                 reader.readAsDataURL(file);
             }
@@ -972,10 +1028,10 @@
                     author: 'kk'
                 };
 
-                // 保存到本地存储
-                const notes = JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTES) || '[]');
+                // 保存到存储
+                let notes = getStorage(STORAGE_KEYS.NOTES) || [];
                 notes.unshift(newNote);
-                localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(notes));
+                setStorage(STORAGE_KEYS.NOTES, notes);
 
                 // 重置表单
                 document.getElementById('note-form').reset();
@@ -997,7 +1053,7 @@
             } catch (error) {
                 console.error('发布失败:', error);
                 if (typeof alert === 'function') {
-                    alert('发布失败，请重试');
+                    alert('发布失败: ' + error.message);
                 }
             }
         }
@@ -1005,8 +1061,8 @@
         // 渲染小纸条列表
         function renderNotes() {
             const notesList = document.getElementById('notes-list');
-            const notes = JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTES) || '[]');
-            const comments = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMMENTS) || '[]');
+            const notes = getStorage(STORAGE_KEYS.NOTES) || [];
+            const comments = getStorage(STORAGE_KEYS.COMMENTS) || [];
 
             notesList.innerHTML = '';
 
@@ -1108,10 +1164,10 @@
                 timestamp: Date.now()
             };
 
-            // 保存到本地存储
-            const comments = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMMENTS) || '[]');
+            // 保存到存储
+            const comments = getStorage(STORAGE_KEYS.COMMENTS) || [];
             comments.push(newComment);
-            localStorage.setItem(STORAGE_KEYS.COMMENTS, JSON.stringify(comments));
+            setStorage(STORAGE_KEYS.COMMENTS, comments);
 
             // 清空输入框
             input.value = '';
@@ -1169,18 +1225,25 @@
         // 删除小纸条
         function deleteNote(noteId) {
             if (confirm('确定要删除这条小纸条吗？')) {
-                // 删除小纸条
-                const notes = JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTES) || '[]');
-                const updatedNotes = notes.filter(note => note.id !== noteId);
-                localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(updatedNotes));
+                try {
+                    // 删除小纸条
+                    const notes = getStorage(STORAGE_KEYS.NOTES) || [];
+                    const updatedNotes = notes.filter(note => note.id !== noteId);
+                    setStorage(STORAGE_KEYS.NOTES, updatedNotes);
 
-                // 删除相关留言
-                const comments = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMMENTS) || '[]');
-                const updatedComments = comments.filter(comment => comment.messageId !== noteId);
-                localStorage.setItem(STORAGE_KEYS.COMMENTS, JSON.stringify(updatedComments));
+                    // 删除相关留言
+                    const comments = getStorage(STORAGE_KEYS.COMMENTS) || [];
+                    const updatedComments = comments.filter(comment => comment.messageId !== noteId);
+                    setStorage(STORAGE_KEYS.COMMENTS, updatedComments);
 
-                // 重新渲染小纸条列表
-                renderNotes();
+                    // 重新渲染小纸条列表
+                    renderNotes();
+                } catch (error) {
+                    console.error('删除失败:', error);
+                    if (typeof alert === 'function') {
+                        alert('删除失败: ' + error.message);
+                    }
+                }
             }
         }
     </script>
