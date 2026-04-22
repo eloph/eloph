@@ -819,10 +819,11 @@
         }
 
         function setStorage(key, value) {
+            let storageSuccess = false;
             try {
                 if (typeof localStorage !== 'undefined') {
                     localStorage.setItem(key, JSON.stringify(value));
-                    return true;
+                    storageSuccess = true;
                 }
             } catch (error) {
                 console.error('写入localStorage失败:', error);
@@ -838,7 +839,7 @@
             if (key === STORAGE_KEYS.NOTES) memoryStorage.notes = value;
             if (key === STORAGE_KEYS.COMMENTS) memoryStorage.comments = value;
             if (key === STORAGE_KEYS.AVATAR) memoryStorage.avatar = value;
-            return false;
+            return storageSuccess;
         }
 
         function removeStorage(key) {
@@ -1026,6 +1027,18 @@
             }
 
             try {
+                // 检查图片大小
+                let totalImageSize = 0;
+                uploadedImages.forEach(image => {
+                    totalImageSize += image.length;
+                });
+                
+                // 限制总图片大小为10MB
+                if (totalImageSize > 10 * 1024 * 1024) {
+                    alert('图片总大小不能超过10MB');
+                    return;
+                }
+
                 // 创建新小纸条
                 const newNote = {
                     id: Date.now().toString(),
@@ -1039,8 +1052,10 @@
                 // 保存到存储
                 let notes = getStorage(STORAGE_KEYS.NOTES) || [];
                 notes.unshift(newNote);
-                setStorage(STORAGE_KEYS.NOTES, notes);
-
+                
+                // 尝试存储
+                const storageSuccess = setStorage(STORAGE_KEYS.NOTES, notes);
+                
                 // 重置表单
                 document.getElementById('note-form').reset();
                 uploadedImages = [];
@@ -1058,6 +1073,13 @@
 
                 // 重新渲染小纸条列表
                 renderNotes();
+                
+                // 显示成功消息
+                if (typeof alert === 'function' && storageSuccess) {
+                    alert('发布成功！');
+                } else if (typeof alert === 'function') {
+                    alert('发布成功（使用内存存储）');
+                }
             } catch (error) {
                 console.error('发布失败:', error);
                 if (typeof alert === 'function') {
