@@ -1033,9 +1033,9 @@
                     totalImageSize += image.length;
                 });
                 
-                // 限制总图片大小为10MB
-                if (totalImageSize > 10 * 1024 * 1024) {
-                    alert('图片总大小不能超过10MB');
+                // 限制总图片大小为100MB
+                if (totalImageSize > 100 * 1024 * 1024) {
+                    alert('图片总大小不能超过100MB');
                     return;
                 }
 
