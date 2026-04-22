@@ -820,12 +820,24 @@
 
         function setStorage(key, value) {
             try {
+                // 检查数据大小
+                const dataSize = JSON.stringify(value).length;
+                // 限制存储大小为5MB
+                if (dataSize > 5 * 1024 * 1024) {
+                    throw new Error('数据大小超过限制（5MB）');
+                }
+                
                 if (typeof localStorage !== 'undefined') {
                     localStorage.setItem(key, JSON.stringify(value));
                     return true;
                 }
             } catch (error) {
                 console.error('写入localStorage失败:', error);
+                // 检查是否是存储空间不足的错误
+                if (error.name === 'QuotaExceededError' || error.message.includes('storage')) {
+                    throw new Error('存储空间不足，请减少图片大小或数量');
+                }
+                throw error;
             }
             // 降级到内存存储
             if (key === STORAGE_KEYS.NOTES) memoryStorage.notes = value;
@@ -958,9 +970,21 @@
                 const filesToProcess = Array.from(files).slice(0, remainingSlots);
 
                 filesToProcess.forEach(file => {
+                    // 检查文件大小（限制为2MB）
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('图片大小不能超过2MB');
+                        return;
+                    }
+
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        uploadedImages.push(e.target.result);
+                        const imageData = e.target.result;
+                        // 检查base64编码后的大小（限制为1MB）
+                        if (imageData.length > 1 * 1024 * 1024) {
+                            alert('图片编码后大小不能超过1MB');
+                            return;
+                        }
+                        uploadedImages.push(imageData);
                         updateUploadedImages();
                     };
                     reader.readAsDataURL(file);
