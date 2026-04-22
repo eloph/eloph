@@ -137,6 +137,23 @@
             background-color: #A7D7E8;
             padding: 4px 10px;
             border-radius: 12px;
+            margin-right: 10px;
+        }
+
+        /* 删除按钮 */
+        .delete-note-btn {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-note-btn:hover {
+            background-color: #ee5a5a;
         }
 
         @keyframes float {
@@ -777,10 +794,9 @@
 
         // 初始化应用
         function initializeApp() {
-            // 检查并初始化本地存储
-            if (!localStorage.getItem(STORAGE_KEYS.NOTES)) {
-                initializeSampleData();
-            }
+            // 清空本地存储（移除示例数据）
+            localStorage.removeItem(STORAGE_KEYS.NOTES);
+            localStorage.removeItem(STORAGE_KEYS.COMMENTS);
 
             // 加载角色头像
             loadRoleAvatar();
@@ -1041,11 +1057,16 @@
 
             const moodEmoji = MOOD_STICKERS[note.mood] || '😊';
             card.innerHTML = `
-                <div class="note-header">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjdCN0I3IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiA0QzkuNzkgNCA4IDUuNzkgOCA4czEuNzkgNCA0IDQgNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQgMS43OS00IDR6Ii8+PHBhdGggZD0iTTEyIDEyQzEyIDEyIDEyIDEyIDEyIDEyeiIvPjxwYXRoIGQ9Ik0xMiAxNEwxMiAxNnoiLz48cGF0aCBkPSJNNyA4SDE3djJINTd6Ii8+PHBhdGggZD0iTTcgMTJIMTd2Mkg3eiIvPjwvc3ZnPg==" alt="用户头像" class="note-avatar">
-                    <span class="note-author">${note.author}</span>
-                    <span class="note-time">${formattedTime}</span>
-                    <span class="note-mood-sticker">${moodEmoji}</span>
+                <div class="note-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center;">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjdCN0I3IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiA0QzkuNzkgNCA4IDUuNzkgOCA4czEuNzkgNCA0IDQgNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQgMS43OS00IDR6Ii8+PHBhdGggZD0iTTEyIDEyQzEyIDEyIDEyIDEyIDEyIDEyeiIvPjxwYXRoIGQ9Ik0xMiAxNEwxMiAxNnoiLz48cGF0aCBkPSJNNyA4SDE3djJINTd6Ii8+PHBhdGggZD0iTTcgMTJIMTd2Mkg3eiIvPjwvc3ZnPg==" alt="用户头像" class="note-avatar">
+                        <span class="note-author">${note.author}</span>
+                        <span class="note-time">${formattedTime}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="note-mood-sticker">${moodEmoji}</span>
+                        <button class="delete-note-btn" onclick="deleteNote('${note.id}')">删除</button>
+                    </div>
                 </div>
                 <div class="note-content">${note.content}</div>
                 ${imagesHtml}
@@ -1131,6 +1152,24 @@
             const modal = document.getElementById('note-modal');
             if (event.target == modal) {
                 closeModal();
+            }
+        }
+
+        // 删除小纸条
+        function deleteNote(noteId) {
+            if (confirm('确定要删除这条小纸条吗？')) {
+                // 删除小纸条
+                const notes = JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTES) || '[]');
+                const updatedNotes = notes.filter(note => note.id !== noteId);
+                localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(updatedNotes));
+
+                // 删除相关留言
+                const comments = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMMENTS) || '[]');
+                const updatedComments = comments.filter(comment => comment.messageId !== noteId);
+                localStorage.setItem(STORAGE_KEYS.COMMENTS, JSON.stringify(updatedComments));
+
+                // 重新渲染小纸条列表
+                renderNotes();
             }
         }
     </script>
