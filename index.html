@@ -464,7 +464,8 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            padding-top: 20px;
         }
 
         .modal-content {
@@ -473,9 +474,10 @@
             padding: 30px;
             width: 90%;
             max-width: 500px;
-            max-height: 90vh;
+            max-height: 80vh;
             overflow-y: auto;
             position: relative;
+            touch-action: manipulation;
         }
 
         .modal-close {
@@ -948,47 +950,56 @@
 
         // 处理小纸条提交
         function handleNoteSubmit(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
 
             const content = document.getElementById('note-content').value;
 
             if (!content.trim()) {
-                alert('请输入内容');
+                if (typeof alert === 'function') {
+                    alert('请输入内容');
+                }
                 return;
             }
 
-            // 创建新小纸条
-            const newNote = {
-                id: Date.now().toString(),
-                content: content,
-                images: [...uploadedImages],
-                mood: selectedMood,
-                timestamp: Date.now(),
-                author: 'kk'
-            };
+            try {
+                // 创建新小纸条
+                const newNote = {
+                    id: Date.now().toString(),
+                    content: content,
+                    images: [...uploadedImages],
+                    mood: selectedMood,
+                    timestamp: Date.now(),
+                    author: 'kk'
+                };
 
-            // 保存到本地存储
-            const notes = JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTES) || '[]');
-            notes.unshift(newNote);
-            localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(notes));
+                // 保存到本地存储
+                const notes = JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTES) || '[]');
+                notes.unshift(newNote);
+                localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(notes));
 
-            // 重置表单
-            document.getElementById('note-form').reset();
-            uploadedImages = [];
-            updateUploadedImages();
-            selectedMood = '开心';
-            document.querySelectorAll('.mood-sticker').forEach(sticker => {
-                sticker.classList.remove('active');
-                if (sticker.dataset.mood === '开心') {
-                    sticker.classList.add('active');
+                // 重置表单
+                document.getElementById('note-form').reset();
+                uploadedImages = [];
+                updateUploadedImages();
+                selectedMood = '开心';
+                document.querySelectorAll('.mood-sticker').forEach(sticker => {
+                    sticker.classList.remove('active');
+                    if (sticker.dataset.mood === '开心') {
+                        sticker.classList.add('active');
+                    }
+                });
+
+                // 关闭弹窗
+                closeModal();
+
+                // 重新渲染小纸条列表
+                renderNotes();
+            } catch (error) {
+                console.error('发布失败:', error);
+                if (typeof alert === 'function') {
+                    alert('发布失败，请重试');
                 }
-            });
-
-            // 关闭弹窗
-            closeModal();
-
-            // 重新渲染小纸条列表
-            renderNotes();
+            }
         }
 
         // 渲染小纸条列表
